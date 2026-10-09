@@ -1,0 +1,41 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Register - Simple E-commerce{% endblock %}
+
+{% block content %}
+<div
+    style="max-width: 500px; margin: 0 auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <h2 style="margin-top: 0; text-align: center;">Create an Account</h2>
+    <form method="post" action="{% url 'shop:register' %}">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">{{
+                field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+            <div style="color: #6c757d; font-size: 0.8rem; margin-top: 0.25rem;">{{ field.help_text }}</div>
+            {% endif %}
+            {% if field.errors %}
+            <div style="color: var(--danger-color); font-size: 0.85rem; margin-top: 0.25rem;">
+                {{ field.errors.as_text }}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">Register</button>
+    </form>
+    <div style="text-align: center; margin-top: 1rem;">
+        <p>Already have an account? <a href="{% url 'shop:login' %}"
+                style="color: var(--primary-color); text-decoration: none;">Login here</a>.</p>
+    </div>
+</div>
+<script>
+    // Style adjustments for standard form outputs
+    document.querySelectorAll('.form-group input').forEach(input => {
+        if (input.type !== 'checkbox') {
+            input.classList.add('form-control');
+        }
+    });
+</script>
+{% endblock content %}

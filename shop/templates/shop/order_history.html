@@ -1,0 +1,53 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Order History - Simple E-commerce{% endblock %}
+
+{% block content %}
+<div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <h1 style="margin-top: 0;">Order History</h1>
+
+    {% if orders %}
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+        {% for order in orders %}
+        <div style="border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+            <div
+                style="background: var(--bg-color); padding: 1rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span style="font-weight: bold; margin-right: 1rem;">Order #{{ order.id }}</span>
+                    <span style="color: #666;">Placed on {{ order.created_at|date:"M d, Y" }}</span>
+                </div>
+                <div>
+                    <span class="badge"
+                        style="background-color: {% if order.status == 'Completed' %}var(--success-color){% elif order.status == 'Cancelled' %}var(--danger-color){% else %}#f39c12{% endif %}; margin-right: 1rem;">
+                        {{ order.status }}
+                    </span>
+                    <strong>Total: ${{ order.total_amount }}</strong>
+                </div>
+            </div>
+            <div style="padding: 1rem;">
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    {% for item in order.items.all %}
+                    <li
+                        style="padding: 0.5rem 0; border-bottom: 1px solid #f1f1f1; display: flex; justify-content: space-between;">
+                        <span>{{ item.quantity }}x {{ item.product_name }}</span>
+                        <span>${{ item.price }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                    <strong>Delivered to:</strong><br>
+                    {{ order.customer_name }}<br>
+                    {{ order.delivery_address }}, {{ order.city }} {{ order.postal_code }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 3rem;">
+        <h3 style="color: #666;">You haven't placed any orders yet.</h3>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-primary" style="margin-top: 1rem;">Start Shopping</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}

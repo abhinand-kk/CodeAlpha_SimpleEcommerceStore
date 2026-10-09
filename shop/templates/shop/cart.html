@@ -1,0 +1,76 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block title %}Your Cart - Simple E-commerce{% endblock %}
+
+{% block content %}
+<div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <h1 style="margin-top: 0;">Shopping Cart</h1>
+
+    {% if cart_items %}
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+            <thead>
+                <tr style="border-bottom: 2px solid var(--border-color); text-align: left;">
+                    <th style="padding: 1rem 0;">Product</th>
+                    <th style="padding: 1rem 0;">Price</th>
+                    <th style="padding: 1rem 0;">Quantity</th>
+                    <th style="padding: 1rem 0;">Total</th>
+                    <th style="padding: 1rem 0;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                    <td style="padding: 1rem 0;">
+                        <a href="{% url 'shop:product_detail' item.product.slug %}"
+                            style="color: var(--secondary-color); text-decoration: none; font-weight: bold;">
+                            {{ item.product.name }}
+                        </a>
+                    </td>
+                    <td style="padding: 1rem 0;">${{ item.product.price }}</td>
+                    <td style="padding: 1rem 0;">
+                        <form action="{% url 'shop:cart_update' item.product.id %}" method="post"
+                            style="display: flex; gap: 0.5rem; align-items: center;">
+                            {% csrf_token %}
+                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1"
+                                max="{{ item.product.stock }}" class="form-control"
+                                style="width: 70px; padding: 0.25rem;">
+                            <button type="submit" class="btn btn-secondary"
+                                style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Update</button>
+                        </form>
+                    </td>
+                    <td style="padding: 1rem 0; font-weight: bold;">${{ item.item_total }}</td>
+                    <td style="padding: 1rem 0;">
+                        <form action="{% url 'shop:cart_remove' item.product.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger"
+                                style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; margin-top: 2rem;">
+        <div style="width: 300px; background: var(--bg-color); padding: 1.5rem; border-radius: 8px;">
+            <h3 style="margin-top: 0;">Cart Summary</h3>
+            <div
+                style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 1.25rem; font-weight: bold;">
+                <span>Total:</span>
+                <span>${{ total_price }}</span>
+            </div>
+            <a href="{% url 'shop:checkout' %}" class="btn btn-primary btn-block">Proceed to Checkout</a>
+        </div>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 3rem;">
+        <h3 style="color: #666;">Your cart is empty.</h3>
+        <p>Looks like you haven't added anything to your cart yet.</p>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-primary" style="margin-top: 1rem;">Start Shopping</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}
