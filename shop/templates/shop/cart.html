@@ -1,51 +1,54 @@
 {% extends 'shop/base.html' %}
 {% load static %}
 
-{% block title %}Your Cart - Simple E-commerce{% endblock %}
+{% block title %}Your Cart - NexaMart{% endblock %}
 
 {% block content %}
-<div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-    <h1 style="margin-top: 0;">Shopping Cart</h1>
+<div
+    style="background: var(--surface-color); padding: 2.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+    <h1 style="margin-top: 0; color: var(--primary-color);">Shopping Cart</h1>
 
     {% if cart_items %}
     <div style="overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 1.5rem;">
             <thead>
-                <tr style="border-bottom: 2px solid var(--border-color); text-align: left;">
+                <tr
+                    style="border-bottom: 2px solid var(--border-color); text-align: left; color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase;">
                     <th style="padding: 1rem 0;">Product</th>
                     <th style="padding: 1rem 0;">Price</th>
                     <th style="padding: 1rem 0;">Quantity</th>
                     <th style="padding: 1rem 0;">Total</th>
-                    <th style="padding: 1rem 0;">Action</th>
+                    <th style="padding: 1rem 0; text-align: right;">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in cart_items %}
                 <tr style="border-bottom: 1px solid var(--border-color);">
-                    <td style="padding: 1rem 0;">
+                    <td style="padding: 1.5rem 0;">
                         <a href="{% url 'shop:product_detail' item.product.slug %}"
-                            style="color: var(--secondary-color); text-decoration: none; font-weight: bold;">
+                            style="color: var(--primary-color); text-decoration: none; font-weight: 600; font-size: 1.1rem;">
                             {{ item.product.name }}
                         </a>
                     </td>
-                    <td style="padding: 1rem 0;">${{ item.product.price }}</td>
-                    <td style="padding: 1rem 0;">
+                    <td style="padding: 1.5rem 0; font-weight: 500;">${{ item.product.price }}</td>
+                    <td style="padding: 1.5rem 0;">
                         <form action="{% url 'shop:cart_update' item.product.id %}" method="post"
                             style="display: flex; gap: 0.5rem; align-items: center;">
                             {% csrf_token %}
                             <input type="number" name="quantity" value="{{ item.quantity }}" min="1"
                                 max="{{ item.product.stock }}" class="form-control"
-                                style="width: 70px; padding: 0.25rem;">
+                                style="width: 80px; padding: 0.4rem; text-align: center;">
                             <button type="submit" class="btn btn-secondary"
-                                style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Update</button>
+                                style="padding: 0.4rem 0.6rem; font-size: 0.8rem;">Update</button>
                         </form>
                     </td>
-                    <td style="padding: 1rem 0; font-weight: bold;">${{ item.item_total }}</td>
-                    <td style="padding: 1rem 0;">
+                    <td style="padding: 1.5rem 0; font-weight: 700; color: var(--text-color);">${{ item.item_total }}
+                    </td>
+                    <td style="padding: 1.5rem 0; text-align: right;">
                         <form action="{% url 'shop:cart_remove' item.product.id %}" method="post">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger"
-                                style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Remove</button>
+                                style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Remove</button>
                         </form>
                     </td>
                 </tr>
@@ -54,22 +57,28 @@
         </table>
     </div>
 
-    <div style="display: flex; justify-content: flex-end; margin-top: 2rem;">
-        <div style="width: 300px; background: var(--bg-color); padding: 1.5rem; border-radius: 8px;">
-            <h3 style="margin-top: 0;">Cart Summary</h3>
+    <div style="display: flex; justify-content: flex-end; margin-top: 2.5rem;">
+        <div
+            style="width: 350px; background: var(--bg-color); padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+            <h3 style="margin-top: 0; color: var(--primary-color);">Cart Summary</h3>
             <div
-                style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 1.25rem; font-weight: bold;">
-                <span>Total:</span>
+                style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 800; border-top: 2px solid var(--border-color); padding-top: 1rem; margin-top: 1rem;">
+                <span>Total</span>
                 <span>${{ total_price }}</span>
             </div>
             <a href="{% url 'shop:checkout' %}" class="btn btn-primary btn-block">Proceed to Checkout</a>
         </div>
     </div>
     {% else %}
-    <div style="text-align: center; padding: 3rem;">
-        <h3 style="color: #666;">Your cart is empty.</h3>
-        <p>Looks like you haven't added anything to your cart yet.</p>
-        <a href="{% url 'shop:product_list' %}" class="btn btn-primary" style="margin-top: 1rem;">Start Shopping</a>
+    <div style="text-align: center; padding: 4rem 2rem;">
+        <svg width="64" height="64" fill="var(--border-color)" viewBox="0 0 24 24" style="margin-bottom: 1rem;">
+            <path
+                d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+        </svg>
+        <h3 style="color: var(--text-color);">Your cart is empty</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Looks like you haven't added anything to your cart
+            yet.</p>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Start Shopping</a>
     </div>
     {% endif %}
 </div>

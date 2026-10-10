@@ -1,48 +1,82 @@
 {% extends 'shop/base.html' %}
 {% load static %}
 
-{% block title %}Products - Simple E-commerce{% endblock %}
+{% block title %}Shop - NexaMart{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-    <h2>Our Products</h2>
-    <form action="" method="get" style="display: flex; gap: 0.5rem;">
+
+<!-- Hero Section for the Homepage -->
+{% if not query %}
+<section class="hero">
+    <h1>Smart finds for everyday living.</h1>
+    <p>Discover high-quality essentials across electronics, home goods, apparel and more. Upgraded quality without the
+        upgraded price.</p>
+    <a href="#products-grid" class="btn btn-secondary" style="background: white; color: var(--primary-color);">Shop
+        Now</a>
+</section>
+{% endif %}
+
+<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;"
+    id="products-grid">
+    <div>
+        <h2 style="margin-bottom: 0;">{% if query %}Search Results for "{{ query }}"{% else %}Our Products{% endif %}
+        </h2>
+    </div>
+    <form action="{% url 'shop:product_list' %}" method="get"
+        style="display: flex; gap: 0.5rem; max-width: 350px; width: 100%;">
         <input type="text" name="q" placeholder="Search products..." value="{{ query|default:'' }}" class="form-control"
-            style="width: auto;">
-        <button type="submit" class="btn btn-secondary">Search</button>
+            style="margin-bottom: 0;">
+        <button type="submit" class="btn btn-primary">Search</button>
     </form>
 </div>
 
 <div class="grid">
     {% for product in products %}
-    <div class="card">
-        {% if product.image %}
-        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img">
-        {% else %}
-        <!-- Fallback image logic -->
-        <div class="card-img"
-            style="display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 3rem;">
-            <!-- Placeholder SVG or just text for fallback -->
-            <svg width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
-                <path
-                    d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
-            </svg>
+    <a href="{% url 'shop:product_detail' product.slug %}"
+        style="text-decoration: none; color: inherit; display: contents;">
+        <div class="card">
+            <div class="card-img-wrapper">
+                {% if product.image %}
+                <!-- Use object-fit cover in CSS -->
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img"
+                    onerror="this.onerror=null;this.src='{% static 'shop/images/fallback.svg' %}';">
+                {% else %}
+                <img src="{% static 'shop/images/fallback.svg' %}" alt="No Image Available" class="fallback-img">
+                {% endif %}
+
+                {% if product.stock > 0 %}
+                <span class="stock-badge in-stock">IN STOCK</span>
+                {% else %}
+                <span class="stock-badge out-of-stock">SOLD OUT</span>
+                {% endif %}
+            </div>
+
+            <div class="card-body">
+                <span class="card-category">{{ product.category }}</span>
+                <h3 class="card-title">{{ product.name }}</h3>
+                <p class="card-text">{{ product.description|truncatewords:12 }}</p>
+                <div class="card-price">${{ product.price }}</div>
+
+                {% if product.stock > 0 %}
+                <span class="btn btn-primary btn-block" style="text-decoration: none;">View Details</span>
+                {% else %}
+                <span class="btn btn-block btn-secondary disabled">Unavailable</span>
+                {% endif %}
+            </div>
         </div>
-        {% endif %}
-        <div class="card-body">
-            <h3 class="card-title">{{ product.name }}</h3>
-            <p style="color: #888; font-size: 0.9rem; margin-top: 0;">{{ product.category }}</p>
-            <p class="card-text">{{ product.description|truncatewords:15 }}</p>
-            <p class="card-price">${{ product.price }}</p>
-            <a href="{% url 'shop:product_detail' product.slug %}" class="btn btn-primary btn-block">View Details</a>
-        </div>
-    </div>
+    </a>
     {% empty %}
-    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
-        <h3>No products found.</h3>
+    <div
+        style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; background: var(--surface-color); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+        <svg width="64" height="64" fill="var(--border-color)" viewBox="0 0 24 24" style="margin-bottom: 1rem;">
+            <path
+                d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+        </svg>
+        <h3 style="color: var(--text-color);">No products found</h3>
         {% if query %}
-        <p>Try clearing your search query.</p>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">We couldn't find anything matching "{{ query }}".
+        </p>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-primary">View All Products</a>
         {% endif %}
     </div>
     {% endfor %}

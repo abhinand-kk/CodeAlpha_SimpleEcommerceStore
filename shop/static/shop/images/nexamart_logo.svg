@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 60" width="250" height="60">
+    <path d="M20 15h12l18 30V15h8v30H46L28 15v30h-8V15z" fill="#003366"/>
+    <text x="65" y="42" font-family="'Inter', 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#003366">Nexa<tspan fill="#005b9f">Mart</tspan></text>
+    <circle cx="12" cy="30" r="6" fill="#005b9f"/>
+</svg>

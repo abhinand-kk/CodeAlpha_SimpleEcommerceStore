@@ -1,53 +1,85 @@
 {% extends 'shop/base.html' %}
 
-{% block title %}Order History - Simple E-commerce{% endblock %}
+{% block title %}Order History - NexaMart{% endblock %}
 
 {% block content %}
-<div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-    <h1 style="margin-top: 0;">Order History</h1>
+<div
+    style="background: var(--surface-color); padding: 2.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+    <h1 style="margin-top: 0; color: var(--primary-color);">Order History</h1>
 
     {% if orders %}
-    <div style="display: flex; flex-direction: column; gap: 2rem;">
+    <div style="display: flex; flex-direction: column; gap: 2rem; margin-top: 2rem;">
         {% for order in orders %}
-        <div style="border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+        <div
+            style="border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm);">
             <div
-                style="background: var(--bg-color); padding: 1rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                style="background: var(--bg-color); padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                 <div>
-                    <span style="font-weight: bold; margin-right: 1rem;">Order #{{ order.id }}</span>
-                    <span style="color: #666;">Placed on {{ order.created_at|date:"M d, Y" }}</span>
+                    <span
+                        style="font-weight: 800; font-size: 1.1rem; margin-right: 1rem; color: var(--text-color);">Order
+                        #{{ order.id }}</span>
+                    <span style="color: var(--text-muted); font-size: 0.95rem;">Placed on {{ order.created_at|date:"M d,
+                        Y" }}</span>
                 </div>
-                <div>
+                <div style="display: flex; align-items: center;">
                     <span class="badge"
-                        style="background-color: {% if order.status == 'Completed' %}var(--success-color){% elif order.status == 'Cancelled' %}var(--danger-color){% else %}#f39c12{% endif %}; margin-right: 1rem;">
+                        style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background-color: {% if order.status == 'Completed' %}var(--success-color){% elif order.status == 'Cancelled' %}var(--danger-color){% else %}#f59e0b{% endif %}; margin-right: 1.5rem;">
                         {{ order.status }}
                     </span>
-                    <strong>Total: ${{ order.total_amount }}</strong>
+                    <strong style="font-size: 1.25rem;">Total: ${{ order.total_amount }}</strong>
                 </div>
             </div>
-            <div style="padding: 1rem;">
-                <ul style="list-style: none; padding: 0; margin: 0;">
-                    {% for item in order.items.all %}
-                    <li
-                        style="padding: 0.5rem 0; border-bottom: 1px solid #f1f1f1; display: flex; justify-content: space-between;">
-                        <span>{{ item.quantity }}x {{ item.product_name }}</span>
-                        <span>${{ item.price }}</span>
-                    </li>
-                    {% endfor %}
-                </ul>
-                <div style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
-                    <strong>Delivered to:</strong><br>
-                    {{ order.customer_name }}<br>
-                    {{ order.delivery_address }}, {{ order.city }} {{ order.postal_code }}
+
+            <div style="padding: 1.5rem; display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+                <div>
+                    <h4
+                        style="margin-top: 0; margin-bottom: 1rem; color: var(--primary-color); font-size: 0.9rem; text-transform: uppercase;">
+                        Items Ordered</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        {% for item in order.items.all %}
+                        <li
+                            style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: 500;"><span
+                                    style="color: var(--text-muted); margin-right: 0.5rem;">{{ item.quantity }}x</span>
+                                {{ item.product_name }}</span>
+                            <span style="font-weight: 600;">${{ item.price }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div
+                    style="background: var(--bg-color); padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border-color);">
+                    <h4
+                        style="margin-top: 0; margin-bottom: 1rem; color: var(--primary-color); font-size: 0.9rem; text-transform: uppercase;">
+                        Shipping Information</h4>
+                    <div style="font-size: 0.95rem; line-height: 1.6; color: var(--text-color);">
+                        <strong>{{ order.customer_name }}</strong><br>
+                        {{ order.delivery_address }}<br>
+                        {{ order.city }}, {{ order.postal_code }}
+                    </div>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
     {% else %}
-    <div style="text-align: center; padding: 3rem;">
-        <h3 style="color: #666;">You haven't placed any orders yet.</h3>
+    <div style="text-align: center; padding: 4rem 2rem;">
+        <svg width="64" height="64" fill="var(--border-color)" viewBox="0 0 24 24" style="margin-bottom: 1rem;">
+            <path
+                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+        </svg>
+        <h3 style="color: var(--text-color);">You haven't placed any orders yet</h3>
         <a href="{% url 'shop:product_list' %}" class="btn btn-primary" style="margin-top: 1rem;">Start Shopping</a>
     </div>
     {% endif %}
 </div>
+
+<style>
+    @media (max-width: 768px) {
+        div[style*="display: grid; grid-template-columns: 2fr 1fr"] {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
 {% endblock content %}

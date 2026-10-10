@@ -5,23 +5,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Simple E-commerce{% endblock %}</title>
+    <title>{% block title %}NexaMart - Smart finds for everyday living{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'shop/css/style.css' %}">
 </head>
 
 <body>
     <header>
         <nav class="navbar">
-            <a href="{% url 'shop:product_list' %}" class="navbar-brand">SimpleShop</a>
+            <a href="{% url 'shop:product_list' %}" class="navbar-brand">
+                <img src="{% static 'shop/images/nexamart_logo.svg' %}" alt="NexaMart Logo">
+            </a>
             <ul class="navbar-nav">
-                <li><a href="{% url 'shop:product_list' %}">Products</a></li>
+                <li><a href="{% url 'shop:product_list' %}">Shop</a></li>
 
                 {% if user.is_authenticated %}
-                <li><a href="{% url 'shop:order_history' %}">Order History</a></li>
+                <li><a href="{% url 'shop:order_history' %}">My Orders</a></li>
                 <li>
                     <form action="{% url 'shop:logout' %}" method="post" style="display:inline;">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-secondary" style="padding: 0.3rem 0.6rem;">Logout</button>
+                        <button type="submit" class="btn btn-secondary" style="padding: 0.4rem 0.8rem;">Logout</button>
                     </form>
                 </li>
                 {% else %}
@@ -30,7 +32,12 @@
                 {% endif %}
 
                 <li>
-                    <a href="{% url 'shop:cart_detail' %}">
+                    <a href="{% url 'shop:cart_detail' %}" style="display: flex; align-items: center; gap: 0.25rem;">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"
+                            style="margin-right: 0.2rem;">
+                            <path
+                                d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+                        </svg>
                         Cart
                         <span class="badge" id="cart-count">
                             {{ request.session.cart|length|default:0 }}
@@ -55,6 +62,15 @@
         {% block content %}
         {% endblock content %}
     </main>
+
+    <footer>
+        <div class="footer-content">
+            <h3 style="margin-bottom: 0.5rem; color: #fff;">NexaMart</h3>
+            <p class="footer-tagline">Smart finds for everyday living.</p>
+            <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 2rem;">&copy; 1999-{% now "Y" %} NexaMart Inc. All
+                rights reserved.</p>
+        </div>
+    </footer>
 </body>
 
 </html>

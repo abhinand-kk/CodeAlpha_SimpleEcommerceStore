@@ -1,81 +1,104 @@
 {% extends 'shop/base.html' %}
 
-{% block title %}Checkout - Simple E-commerce{% endblock %}
+{% block title %}Checkout - NexaMart{% endblock %}
 
 {% block content %}
-<div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-    <h1 style="margin-top: 0;">Checkout</h1>
+<div
+    style="background: var(--surface-color); padding: 2.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+    <h1 style="margin-top: 0; color: var(--primary-color);">Checkout</h1>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 4rem;">
 
         <!-- Order Summary -->
-        <div>
-            <h3>Order Summary</h3>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
-                <tbody>
-                    {% for item in cart_items %}
-                    <tr style="border-bottom: 1px solid var(--border-color);">
-                        <td style="padding: 1rem 0;">{{ item.product.name }} (x{{ item.quantity }})</td>
-                        <td style="padding: 1rem 0; text-align: right;">${{ item.product.price }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div style="order: 2;">
             <div
-                style="display: flex; justify-content: space-between; margin-top: 1rem; font-size: 1.25rem; font-weight: bold;">
-                <span>Total:</span>
-                <span>${{ total_price }}</span>
-            </div>
+                style="background: var(--bg-color); padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                <h3
+                    style="margin-top: 0; color: var(--primary-color); border-bottom: 2px solid var(--border-color); padding-bottom: 1rem;">
+                    Order Summary</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <td style="padding: 1rem 0; font-weight: 500;">{{ item.product.name }} <span
+                                    style="color: var(--text-muted); font-size: 0.9rem;">(x{{ item.quantity }})</span>
+                            </td>
+                            <td style="padding: 1rem 0; text-align: right; font-weight: 600;">${{ item.product.price }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div
+                    style="display: flex; justify-content: space-between; margin-top: 1.5rem; padding-top: 1rem; border-top: 2px solid var(--border-color); font-size: 1.25rem; font-weight: 800;">
+                    <span>Total:</span>
+                    <span>${{ total_price }}</span>
+                </div>
 
-            <a href="{% url 'shop:cart_detail' %}"
-                style="display: inline-block; margin-top: 1rem; color: var(--primary-color);">Return to Cart</a>
+                <a href="{% url 'shop:cart_detail' %}"
+                    style="display: block; text-align: center; margin-top: 2rem; font-weight: 600; text-decoration: none; color: var(--primary-light);">←
+                    Return to Cart</a>
+            </div>
         </div>
 
         <!-- Checkout Form -->
-        <div>
-            <h3>Shipping Details</h3>
-            <form method="post" action="{% url 'shop:checkout' %}">
+        <div style="order: 1;">
+            <h3 style="color: var(--primary-color);">Shipping Details</h3>
+            <form method="post" action="{% url 'shop:checkout' %}" style="margin-top: 1.5rem;">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;" for="customer_name">Full
-                        Name</label>
+                    <label class="form-label" for="customer_name">Full Name</label>
                     <input type="text" id="customer_name" name="customer_name" class="form-control" required
                         value="{{ user.username }}">
                 </div>
 
                 <div class="form-group">
-                    <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;" for="email">Email
-                        Address</label>
+                    <label class="form-label" for="email">Email Address</label>
                     <input type="email" id="email" name="email" class="form-control" required value="{{ user.email }}">
                 </div>
 
                 <div class="form-group">
-                    <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;" for="phone">Phone
-                        Number</label>
+                    <label class="form-label" for="phone">Phone Number</label>
                     <input type="text" id="phone" name="phone" class="form-control" required>
                 </div>
 
                 <div class="form-group">
-                    <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;"
-                        for="delivery_address">Street Address</label>
+                    <label class="form-label" for="delivery_address">Street Address</label>
                     <input type="text" id="delivery_address" name="delivery_address" class="form-control" required>
                 </div>
 
-                <div class="form-group">
-                    <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;" for="city">City</label>
-                    <input type="text" id="city" name="city" class="form-control" required>
-                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="city">City</label>
+                        <input type="text" id="city" name="city" class="form-control" required>
+                    </div>
 
-                <div class="form-group">
-                    <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;" for="postal_code">Postal
-                        Code</label>
-                    <input type="text" id="postal_code" name="postal_code" class="form-control" required>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="postal_code">Postal Code</label>
+                        <input type="text" id="postal_code" name="postal_code" class="form-control" required>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-block"
-                    style="margin-top: 2rem; font-size: 1.1rem; padding: 1rem;">Place Order</button>
+                    style="margin-top: 2.5rem; font-size: 1.1rem; padding: 1rem;">Place Order</button>
             </form>
         </div>
     </div>
 </div>
+
+<style>
+    @media (max-width: 900px) {
+        div[style*="display: grid; grid-template-columns: 1fr 1.5fr"] {
+            grid-template-columns: 1fr !important;
+        }
+
+        div[style*="order: 2;"] {
+            order: 1 !important;
+        }
+
+        div[style*="order: 1;"] {
+            order: 2 !important;
+        }
+    }
+</style>
 {% endblock content %}
